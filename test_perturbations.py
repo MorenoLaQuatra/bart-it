@@ -46,11 +46,11 @@ print("\n\nText:", text)
 print("PERTURBED token_masking:", perturbed_text)
 
 tokenized_input_ids = tokenizer(text, return_tensors="pt")["input_ids"][0]
-perturbed_tokenized_text = text_infilling(
+perturbed_tokenized_text = token_infilling(
     tokenized_input_ids,
     mask_token_id=tokenizer.mask_token_id,
     list_special_tokens=list_special_tokens,
 )
 perturbed_text = tokenizer.decode(perturbed_tokenized_text)
 print("\n\nText:", text)
-print("PERTURBED text_infilling:", perturbed_text)
+print("PERTURBED token_infilling:", perturbed_text)

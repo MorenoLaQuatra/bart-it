@@ -18,7 +18,7 @@ def sentence_permutation(text: str) -> str:
     return permuted_text.strip()
 
 
-def text_infilling(
+def token_infilling(
     tokenized_sequence: torch.Tensor,
     mask_token_id: int,
     mask_probability: float = 0.15,
@@ -37,15 +37,20 @@ def text_infilling(
     """
     span_length = int(torch.poisson(torch.tensor([3.0])))
     perturbed_ids = torch.empty(0, dtype=torch.long)
-    for i in range(0, len(tokenized_sequence), span_length):
-        if torch.rand(1) < mask_probability:
-            perturbed_ids = torch.cat(
-                (perturbed_ids, torch.tensor([mask_token_id], dtype=torch.long))
-            )
-        else:
-            perturbed_ids = torch.cat(
-                (perturbed_ids, tokenized_sequence[i : i + span_length])
-            )
+    if span_length > 0:
+        for i in range(0, len(tokenized_sequence), span_length):
+            if torch.rand(1) < mask_probability:
+                # check if the span does not contain special tokens
+                if not any(token in list_special_tokens for token in tokenized_sequence[i : i + span_length]):
+                    perturbed_ids = torch.cat(
+                        (perturbed_ids, torch.tensor([mask_token_id], dtype=torch.long))
+                    )
+            else:
+                perturbed_ids = torch.cat(
+                    (perturbed_ids, tokenized_sequence[i : i + span_length])
+                )
+    else:
+        perturbed_ids = tokenized_sequence # if the span length is 0, the text is not perturbed
     return perturbed_ids
 
 
@@ -69,8 +74,9 @@ def token_masking(
 
 
 def token_deletion(
-    tokenized_text: torch.Tensor,
-    deletion_probability: float = 0.15,
+    tokenized_sequence: torch.Tensor,
+    mask_token_id: int,
+    mask_probability: float = 0.15,
     list_special_tokens: list = [],
 ) -> str:
     """
@@ -79,9 +85,9 @@ def token_deletion(
     :param text: The text to be token deleted.
     :return: The token deleted text.
     """
-    delete_mask = torch.rand(len(tokenized_text)) < deletion_probability
-    tokenized_text = tokenized_text[~delete_mask]
-    return tokenized_text
+    delete_mask = torch.rand(len(tokenized_sequence)) < mask_probability
+    tokenized_sequence = tokenized_sequence[~delete_mask]
+    return tokenized_sequence
 
 
 def document_rotation(text: str) -> str:
