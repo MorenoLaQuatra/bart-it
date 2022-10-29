@@ -158,7 +158,7 @@ training_args = transformers.TrainingArguments(
     output_dir="./bart-it-size-s",
     overwrite_output_dir=True,
     per_device_train_batch_size=32,
-    per_device_eval_batch_size=32,
+    per_device_eval_batch_size=16,
     warmup_steps=17_000,
     weight_decay=0.01,
     save_strategy="steps",
@@ -174,7 +174,7 @@ training_args = transformers.TrainingArguments(
     greater_is_better=False,
     remove_unused_columns=False,
     fp16=True,
-    dataloader_num_workers=8,
+    dataloader_num_workers=24,
     learning_rate=1e-4,
 )
 
@@ -189,7 +189,7 @@ trainer = transformers.Trainer(
 )
 
 # Train the model
-trainer.train()
+trainer.train(resume_from_checkpoint="./bart-it-size-s/checkpoint-1350000")
 
 # Evaluate the model
 print(trainer.evaluate(eval_streaming_dataset))
