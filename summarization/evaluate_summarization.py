@@ -23,6 +23,9 @@ def parse_args():
     parser.add_argument("--batch_size", type=int, default=8, required=False)
     parser.add_argument("--print_samples", default=False, required=False, action="store_true")
 
+    parser.add_argument("--source_key", type=str, default="source", required=False)
+    parser.add_argument("--target_key", type=str, default="summary", required=False)
+
     args = parser.parse_args()
 
     return args
@@ -44,9 +47,23 @@ if args.use_cuda:
     model = model.to(device)
 tokenizer = transformers.AutoTokenizer.from_pretrained(args.tokenizer_path)
 
-test_data = load_dataset(args.dataset_name)["test"]
-test_input = test_data["source"]
-test_target = test_data["target"]
+try:
+    test_data = load_dataset(args.dataset_name)["test"]
+    test_input = test_data[args.source_key]
+    test_target = test_data[args.target_key]
+except Exception as e:
+    print ("Error loading dataset splits. Most likely the dataset is not split into train, test and validation")
+    print ("If you are using WITS, the default configuration randomly splits the dataset using 10K samples for test and 10K samples for validation and the rest for training")
+    # take 10K samples for validation, 10K for testing, and the rest for training
+    dataset = load_dataset(args.dataset_name)
+    dataset = dataset["train"]
+    dataset = dataset.shuffle(seed=42)
+    test_dataset = dataset[10000:20000]
+
+    test_input = test_dataset[args.source_key]
+    test_target = test_dataset[args.target_key]
+
+
 test_dataset = Dataset(source_text=test_input, target_text=test_target, tokenizer=tokenizer)
 test_dataloader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
 

@@ -1,7 +1,7 @@
 # --------------------------------------------------------------------
 # This script is used to fine-tune the model on different datasets.
 # --------------------------------------------------------------------
-
+: '
 export COMET_API_KEY="HN6FbVyLBsdD2ghHbKzTPseHA"
 export COMET_PROJECT_NAME="bart_it_ilpost"
 export COMET_WORKSPACE="morenolaquatra"
@@ -45,3 +45,21 @@ python finetune_summarization.py \
     --tokenizer_path "../tokenizer_bart_it" \
     --use_cuda \
     --fp16 > mlsum_finetune.log
+
+'
+
+# Silvia/WITS
+
+export COMET_API_KEY="HN6FbVyLBsdD2ghHbKzTPseHA"
+export COMET_PROJECT_NAME="bart_it_wits"
+export COMET_WORKSPACE="morenolaquatra"
+
+python finetune_summarization.py \
+    --model_path "../bart-it-s" \
+    --log_dir "wits_logs" \
+    --checkpoint_dir "wits_checkpoints" \
+    --dataset_name "Silvia/WITS" \
+    --target_key "summary" \
+    --tokenizer_path "../tokenizer_bart_it" \
+    --use_cuda \
+    --fp16 > wits_finetune.log

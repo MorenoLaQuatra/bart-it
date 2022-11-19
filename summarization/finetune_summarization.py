@@ -23,13 +23,16 @@ def parse_args():
     parser.add_argument("--logging_steps", type=int, default=100, required=False)
     parser.add_argument("--max_input_length", type=int, default=1024, required=False)
     parser.add_argument("--max_output_length", type=int, default=128, required=False)
-    parser.add_argument("--learning_rate", type=float, default=1e-4, required=False)
-    parser.add_argument("--dataloader_num_workers", type=int, default=8, required=False)
+    parser.add_argument("--learning_rate", type=float, default=1e-5, required=False)
+    parser.add_argument("--dataloader_num_workers", type=int, default=24, required=False)
     parser.add_argument("--save_total_limit", type=int, default=5, required=False)
     parser.add_argument("--use_cuda", default=False, action="store_true", required=False)
     parser.add_argument("--fp16", default=False, action="store_true", required=False)
     parser.add_argument("--hub_model_id", type=str, default="", required=False)
     parser.add_argument("--push_to_hub", default=False, action="store_true", required=False)
+
+    parser.add_argument("--source_key", type=str, default="source", required=False)
+    parser.add_argument("--target_key", type=str, default="summary", required=False)
 
     parser.add_argument("--log_dir", type=str, default="", required=True)
     parser.add_argument("--checkpoint_dir", type=str, default="", required=True)
@@ -55,9 +58,19 @@ model = transformers.AutoModelForSeq2SeqLM.from_pretrained(args.model_path)
 tokenizer = transformers.AutoTokenizer.from_pretrained(args.tokenizer_path)
 
 dataset = load_dataset(args.dataset_name)
-train_dataset = dataset["train"]
-test_dataset = dataset["test"]
-val_dataset = dataset["validation"]
+try:
+    train_dataset = dataset["train"]
+    test_dataset = dataset["test"]
+    val_dataset = dataset["validation"]
+except Exception as e:
+    print ("Error loading dataset splits. Most likely the dataset is not split into train, test and validation")
+    print ("If you are using WITS, the default configuration randomly splits the dataset using 10K samples for test and 10K samples for validation and the rest for training")
+    # take 10K samples for validation, 10K for testing, and the rest for training
+    dataset = dataset["train"]
+    dataset = dataset.shuffle(seed=42)
+    val_dataset = dataset[:10000]
+    test_dataset = dataset[10000:20000]
+    train_dataset = dataset[20000:]
 
 print ("Len train: ", len(train_dataset))
 print ("Len test: ", len(test_dataset))
@@ -80,18 +93,18 @@ avg_len_val = sum([len(tokenizer.encode(x)) for x in val_dataset["source"]]) / l
 avg_len_output_val = sum([len(tokenizer.encode(x)) for x in val_dataset["target"]]) / len(val_dataset)
 '''
 
-train_input = train_dataset["source"]
-train_target = train_dataset["target"]
+train_input = train_dataset[args.source_key]
+train_target = train_dataset[args.target_key]
 
-test_input = test_dataset["source"]
-test_target = test_dataset["target"]
+test_input = test_dataset[args.source_key]
+test_target = test_dataset[args.target_key]
 
-val_input = val_dataset["source"]
-val_target = val_dataset["target"]
+val_input = val_dataset[args.source_key]
+val_target = val_dataset[args.target_key]
 
 
 train_dataset = Dataset(source_text=train_input, target_text=train_target, tokenizer=tokenizer, max_output_length=args.max_output_length, max_input_length=args.max_input_length)
-#test_dataset = Dataset(source_text=test_input, target_text=test_target, tokenizer=tokenizer, max_output_length=args.max_output_length, max_input_length=args.max_input_length)
+test_dataset = Dataset(source_text=test_input, target_text=test_target, tokenizer=tokenizer, max_output_length=args.max_output_length, max_input_length=args.max_input_length)
 val_dataset = Dataset(source_text=val_input, target_text=val_target, tokenizer=tokenizer, max_output_length=args.max_output_length, max_input_length=args.max_input_length)
 
 
