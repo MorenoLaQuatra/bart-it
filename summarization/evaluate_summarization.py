@@ -6,6 +6,8 @@ from torch.utils.data import DataLoader
 import evaluate
 import argparse
 from tqdm import tqdm
+import time
+
 
 # ----------------------------------------------------------------------------------------------------
 #
@@ -45,6 +47,8 @@ device = "cuda" if args.use_cuda else "cpu"
 model = transformers.AutoModelForSeq2SeqLM.from_pretrained(args.model_path)
 if args.use_cuda:
     model = model.to(device)
+# eval mode
+model.eval()
 tokenizer = transformers.AutoTokenizer.from_pretrained(args.tokenizer_path)
 
 try:
@@ -77,13 +81,18 @@ test_dataloader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=F
 
 references = test_target
 hypotheses = []
+times = []
+
 
 for batch in tqdm(test_dataloader):
     input_ids = batch["input_ids"].to(device)
     attention_mask = batch["attention_mask"].to(device)
     
     # Generate Summary
+    start_time = time.time()
     summary_ids = model.generate(input_ids=input_ids, attention_mask=attention_mask, max_length=args.max_length)
+    end_time = time.time()
+    times.append(end_time - start_time)
 
     # Decode Summary
     summary = tokenizer.batch_decode(summary_ids, skip_special_tokens=True)
@@ -116,3 +125,4 @@ print (f"ROUGE-Lsum: {round(rouge_results['rougeLsum'] * 100, 2)}")
 print (f'BERTScore P: {round((sum(bertscore_output["precision"]) / len(bertscore_output["precision"])) * 100, 2)}')
 print (f'BERTScore R: {round((sum(bertscore_output["recall"]) / len(bertscore_output["recall"])) * 100, 2)}')
 print (f'BERTScore F1: {round((sum(bertscore_output["f1"]) / len(bertscore_output["f1"])) * 100, 2)}')
+print (f"Time per sample: {round(sum(times) / (len(times) * args.batch_size), 2)}")
