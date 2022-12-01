@@ -30,10 +30,10 @@ models = [
 ]
 
 element_per_sec = [
-    1/0.24,
+    1/0.09,
     1/0.03,
     1/0.09,
-    1/0.09,
+    1/0.24,
 ]
 
 # plot multi-bar chart - 
