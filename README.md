@@ -37,7 +37,7 @@ The main script for pretraining the model is `pretrain_base.py`. The model is tr
 | D_MODEL | 768 |
 | DROPOUT | 0.1 |
 
-The model is trained on 2 NVIDIA RTX A6000 GPUs for a total of 1,7 million steps. The pre-trained model is released for the community on the [HuggingFace Hub](https://huggingface.co/) - [BART-IT - MODEL RELEASED UPON PUBLICATION](https://huggingface.co/).
+The model is trained on 2 NVIDIA RTX A6000 GPUs for a total of 1,7 million steps. The pre-trained model is released for the community on the [HuggingFace Hub](https://huggingface.co/) - [BART-IT](https://huggingface.co/morenolq/bart-it)
 
 ## Model Fine-tuning
 
@@ -51,26 +51,37 @@ The model is fine-tuned on the abstractive summarization task using the paramete
 | MAX_INPUT_LENGTH | 1024 |
 | MAX_TARGET_LENGTH | 128 |
 
-For more information about the model parameters, please refer to the `summarization/finetune_summarization.py` script and to the following [paper - to be released upon publication](#).
+For more information about the model parameters, please refer to the `summarization/finetune_summarization.py` script and to the following [paper](https://doi.org/10.3390/fi15010015).
 
 The model is fine-tuned on different summarization datasets and model weights for each dataset are released on the [HuggingFace Hub](https://huggingface.co/) - following table:
 
 | Dataset Type | Dataset Name | Model Weights | Dataset Paper |
 | --- | --- | --- | --- |
-| News Summarization | FanPageSum | [BART-IT - MODEL RELEASED UPON PUBLICATION](https://huggingface.co/) | [Two New Datasets for Italian-Language Abstractive Text Summarization](https://doi.org/10.3390/info13050228) |
-| News Summarization | IlPost | [BART-IT - MODEL RELEASED UPON PUBLICATION](https://huggingface.co/) | [Two New Datasets for Italian-Language Abstractive Text Summarization](https://doi.org/10.3390/info13050228) |
-| Wikipedia Summarization | WITS | [BART-IT - MODEL RELEASED UPON PUBLICATION](https://huggingface.co/) | [WITS: Wikipedia for Italian Text Summarization](https://ceur-ws.org/Vol-3033/paper65.pdf) |
+| News Summarization | FanPage | [`bart-it-fanpage`](https://huggingface.co/morenolq/bart-it-fanpage) | [Two New Datasets for Italian-Language Abstractive Text Summarization](https://doi.org/10.3390/info13050228) |
+| News Summarization | IlPost | [`bart-it-ilpost`](https://huggingface.co/morenolq/bart-it-ilpost) | [Two New Datasets for Italian-Language Abstractive Text Summarization](https://doi.org/10.3390/info13050228) |
+| Wikipedia Summarization | WITS | [`bart-it-WITS`](https://huggingface.co/morenolq/bart-it-WITS) | [WITS: Wikipedia for Italian Text Summarization](https://ceur-ws.org/Vol-3033/paper65.pdf) |
 
-The model is an efficient and accurate sequence to sequence model for Italian language. The performance of the model are reported using both ROUGE and BERTScore metrics. Please refer to the following [paper - to be released upon publication](#) for more details.
+The model is an efficient and accurate sequence to sequence model for Italian language. The performance of the model are reported using both ROUGE and BERTScore metrics. Please refer to the following [paper](https://doi.org/10.3390/fi15010015) for more details.
 
 The script for evaluating the model on the summarization task is `summarization/evaluate_summarization.py`.
 
 ## Citation and acknowledgments
 
-If you use this code or the pre-trained model, please cite the following [paper - to be released upon publication](#):
+If you use this code or the pre-trained model, please cite the following [paper](https://doi.org/10.3390/fi15010015):
 
-```
-...
+```bibtex
+@Article{BARTIT,
+    AUTHOR = {La Quatra, Moreno and Cagliero, Luca},
+    TITLE = {BART-IT: An Efficient Sequence-to-Sequence Model for Italian Text Summarization},
+    JOURNAL = {Future Internet},
+    VOLUME = {15},
+    YEAR = {2023},
+    NUMBER = {1},
+    ARTICLE-NUMBER = {15},
+    URL = {https://www.mdpi.com/1999-5903/15/1/15},
+    ISSN = {1999-5903},
+    DOI = {10.3390/fi15010015}
+}
 ```
 
 If you use the FanPage or IlPost datasets, please cite the following [paper](https://doi.org/10.3390/info13050228).

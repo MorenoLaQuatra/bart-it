@@ -149,7 +149,7 @@ QA/
 QA/*
 
 pretrain_large.py
-
+HF_MODELS/*
 .*DS_Store
 
 
