@@ -189,7 +189,7 @@ trainer = transformers.Trainer(
 )
 
 # Train the model
-trainer.train(resume_from_checkpoint="./bart-it-size-s/checkpoint-1350000")
+trainer.train()
 
 # Evaluate the model
 print(trainer.evaluate(eval_streaming_dataset))
