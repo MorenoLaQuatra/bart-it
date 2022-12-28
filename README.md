@@ -11,6 +11,7 @@ As pointed out by the IT5 co-author ([@gsarti_](https://twitter.com/gsarti_), th
 - [Model Tokenizer](#model-tokenizer)
 - [Model Pretraining](#model-pretraining)
 - [Model Fine-Tuning](#model-fine-tuning)
+- [Demo](#demo)
 - [Citation and acknowledgements](#citation-and-acknowledgements)
 
 ## Model Tokenizer
@@ -68,6 +69,11 @@ The model is fine-tuned on different summarization datasets and model weights fo
 The model is an efficient and accurate sequence to sequence model for Italian language. The performance of the model are reported using both ROUGE and BERTScore metrics. Please refer to the following [paper](https://doi.org/10.3390/fi15010015) for more details.
 
 The script for evaluating the model on the summarization task is `summarization/evaluate_summarization.py`.
+
+## Demo
+
+The demo for the summarization of Italian text is available on the [HuggingFace Spaces](https://huggingface.co/spaces/morenolq/italian-summarization).
+You can try it out by clicking on the link above or by using the `app.py` script available in the repository (you may need to install [`gradio`](https://www.gradio.app/) library if you want to run the script locally).
 
 ## Citation and acknowledgments
 
