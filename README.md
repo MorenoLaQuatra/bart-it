@@ -2,6 +2,10 @@
 
 This repository contains the code for the pretraining BART-IT, an efficient and accurate sequence to sequence model for Italian language.
 
+## Notes
+
+As pointed out by the original author ([@gsarti_](https://twitter.com/gsarti_)) the IT5 model compared in the paper was not trained with multi-task learning, but with the regular span masking objective (as adopted from newer versions of T5).
+
 ## Table of Contents
 
 - [Model Tokenizer](#model-tokenizer)
